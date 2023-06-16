@@ -49,12 +49,19 @@ class Joint:
         joint = Element('joint')
         joint.attrib = {'name':self.name, 'type':self.type}
         
+        # origin and translation
         origin = SubElement(joint, 'origin')
         origin.attrib = {'xyz':' '.join([str(_) for _ in self.xyz]), 'rpy':'0 0 0'}
+        
+        # parent link (in Fusion the second chosen component)
         parent = SubElement(joint, 'parent')
         parent.attrib = {'link':self.parent}
+
+        # child link (in Fusion the first chosen component)
         child = SubElement(joint, 'child')
         child.attrib = {'link':self.child}
+
+        # type of joint if not fixed
         if self.type == 'revolute' or self.type == 'continuous' or self.type == 'prismatic':        
             axis = SubElement(joint, 'axis')
             axis.attrib = {'xyz':' '.join([str(_) for _ in self.axis])}

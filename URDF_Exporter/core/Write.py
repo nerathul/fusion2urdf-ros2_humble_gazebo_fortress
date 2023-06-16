@@ -231,7 +231,7 @@ def write_gazebo_xacro(joints_dict, links_xyz_dict, inertial_dict, package_name,
         f.write('  <mu1>0.2</mu1>\n')
         f.write('  <mu2>0.2</mu2>\n')
         f.write('  <selfCollide>true</selfCollide>\n')
-        f.write('  <gravity>true</gravity>\n')
+        f.write('  <gravity>false</gravity>\n')
         f.write('</gazebo>\n')
         f.write('\n')
 
@@ -438,3 +438,60 @@ def write_yaml(package_name, robot_name, save_dir, joints_dict):
                 f.write('    joint: '+ joint + '\n')
                 f.write('    pid: {p: 100.0, i: 0.01, d: 10.0}\n')
 
+def write_yaml(package_name, robot_name, save_dir, joints_dict):
+    """
+    write yaml file "save_dir/launch/controller.yaml"
+    
+    Parameter
+    ---------
+    robot_name: str
+        name of the robot
+    save_dir: str
+        path of the repository to save
+    joints_dict: dict
+        information of the joints
+    """
+    try: os.mkdir(save_dir + '/launch')
+    except: pass 
+
+    controller_name = robot_name + '_controller'
+    file_name = save_dir + '/launch/controller.yaml'
+    with open(file_name, 'w') as f:
+        f.write('controller_manager:\n')
+        f.write('  ros__parameters:\n')
+        f.write('    update_rate: 10  # Hz\n\n')
+
+        f.write('    joint_state_broadcaster:\n')  
+        f.write('      type: joint_state_broadcaster/JointStateBroadcaster\n\n')
+
+        f.write('    forward_position_controller:\n')  
+        f.write('      type: forward_command_controller/ForwardCommandController\n\n')
+
+        f.write('    position_trajectory_controller:\n')  
+        f.write('      type: joint_trajectory_controller/JointTrajectoryController\n\n\n')
+
+        f.write('forward_position_controller:\n')
+        f.write('  ros__parameters:\n')
+        f.write('    joints:\n')
+
+        for joint in joints_dict:
+            joint_type = joints_dict[joint]['type']
+            if joint_type != 'fixed':
+                f.write('      - '+ joint + '\n')
+
+        f.write('    interface_name: position\n\n\n')
+
+        f.write('position_trajectory_controller:\n')
+        f.write('  ros__parameters:\n')
+        f.write('    joints:\n')
+
+        for joint in joints_dict:
+            joint_type = joints_dict[joint]['type']
+            if joint_type != 'fixed':
+                f.write('      - '+ joint + '\n')
+
+        f.write('    command_interfaces:\n')
+        f.write('      - position\n')
+
+        f.write('    state_interfaces:\n')
+        f.write('      - position\n')
