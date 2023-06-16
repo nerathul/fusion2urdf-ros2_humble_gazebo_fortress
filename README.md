@@ -1,3 +1,12 @@
+# fusion2urdf ROS2 (Humble) with (Ignition) Gazebo Fortress
+
+This repo is a fork of the original fusion2urdf script for ROS1 and Gazebo Classic. The Script is ported for new applications and
+some more functionality. 
+
+## Warning !!! ##
+The script still got some bugs (names not get passed right in the launch.py files mostly) and will need some manual changes at this
+stage. Updates will come soon.
+
 # fusion2urdf
 
 I have stopped developing this repo, but any contributions are welcome.
